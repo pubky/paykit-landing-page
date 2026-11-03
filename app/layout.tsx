@@ -20,7 +20,7 @@ const socialImage = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://paykit-landing-page.vercel.app"),
+  metadataBase: new URL("https://paykit.to"),
   title: "Paykit",
   description,
   alternates: { canonical: "/" },

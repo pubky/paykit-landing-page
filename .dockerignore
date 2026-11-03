@@ -1,0 +1,14 @@
+.git
+.env*
+.npmrc
+.ssh
+.aws
+node_modules
+.next
+out
+coverage
+test-results
+playwright-report
+*.tsbuildinfo
+*.log
+.DS_Store

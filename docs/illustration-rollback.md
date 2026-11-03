@@ -10,17 +10,16 @@ The initial trial is tagged `illustration-discovery-layer-v1`. The subsequent
 heading refinement, “I want to pay”, is tagged `illustration-discovery-layer-v2`.
 
 To restore the previous illustration, responsive layout, and explanatory text
-while keeping shared history, run from `feat/paykit-landing`:
+while keeping shared history, run from `main`:
 
 ```sh
 git revert --no-commit illustration-before-discovery-layer..illustration-discovery-layer-v2
 git commit -m "Restore previous Paykit illustration"
-git push origin HEAD:refs/heads/feat/paykit-landing
-npx --yes vercel@64.7.0 --prod --yes --no-wait
+git push origin HEAD:refs/heads/main
 ```
 
-Verify that deployment reaches Ready and is assigned to
-`https://paykit-landing-page.vercel.app/`. Reverting the trial restores the former
+Rebuild and redeploy using the [Docker deployment instructions](../README.md#deploy-with-docker),
+then verify the result at `https://paykit.to/`. Reverting the trial restores the former
 Bitkit position too; it can be moved first separately if preferred. Future edits
 to the same files may require resolving a normal revert conflict.
 
@@ -39,13 +38,13 @@ To return to the static version, use:
 ```sh
 git revert --no-commit illustration-before-animation..illustration-animation-v1
 git commit -m "Restore static Paykit payment illustration"
-git push origin HEAD:refs/heads/feat/paykit-landing
-npx --yes vercel@64.7.0 --prod --yes --no-wait
+git push origin HEAD:refs/heads/main
 ```
 
 This restores the static component, its styling, and its explanatory text while
-preserving the earlier illustration history. Confirm the deployment reaches Ready
-and the canonical domain points to it.
+preserving the earlier illustration history. Rebuild and redeploy using the
+[Docker deployment instructions](../README.md#deploy-with-docker), then verify the result
+at `https://paykit.to/`.
 
 ## Glass scene and looping autoplay
 
@@ -58,9 +57,11 @@ To restore the first animation:
 ```sh
 git revert --no-commit illustration-before-lively-animation..illustration-lively-animation-v1
 git commit -m "Restore first Paykit animation"
-git push origin HEAD:refs/heads/feat/paykit-landing
-npx --yes vercel@64.7.0 --prod --yes --no-wait
+git push origin HEAD:refs/heads/main
 ```
+
+Rebuild and redeploy using the [Docker deployment instructions](../README.md#deploy-with-docker),
+then verify the result at `https://paykit.to/`.
 
 To return all the way to the static image after this update, revert the complete
 range `illustration-before-animation..illustration-lively-animation-v1` instead.

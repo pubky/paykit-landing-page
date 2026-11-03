@@ -178,7 +178,7 @@ The project owner authorized removing the temporary password gate. The landing p
 
 The introductory video is now https://www.youtube.com/watch?v=cQi8QkG_y4Y, with its official local thumbnail and the same click-to-load privacy behavior.
 
-Validation covers anonymous HTML/RSC/calendar access, retired endpoint responses, public sharing metadata, desktop/mobile layout, calendar actions, the new video embed and contact-draft behavior. Production URL: https://paykit-landing-page.vercel.app.
+Validation covers anonymous HTML/RSC/calendar access, retired endpoint responses, public sharing metadata, desktop/mobile layout, calendar actions, the new video embed and contact-draft behavior. Production URL: https://paykit.to.
 
 The following delivery record describes the earlier gated preview, rather than the current public launch.
 

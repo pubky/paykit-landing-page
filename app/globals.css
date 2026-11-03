@@ -670,45 +670,42 @@ h3 {
   margin-left: auto;
   max-width: 180px;
 }
-.lugano {
+.conference {
   background:
     radial-gradient(ellipse at 0 30%, #ff6b3d12, transparent 70%), #11131a;
   border-block: 1px solid #ff6b3d25;
 }
-.lugano-landscape {
-  display: none;
-}
-.lugano-inner {
+.conference-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: center;
 }
-.lugano-copy .eyebrow {
+.conference-copy .eyebrow {
   line-height: 1.6;
   font-size: 14px;
   flex-wrap: wrap;
 }
-.lugano-copy h2 {
+.conference-copy h2 {
   max-width: 440px;
   font-size: clamp(38px, 4.5vw, 58px);
 }
-.lugano-subtitle {
+.conference-subtitle {
   font-size: 24px;
   color: #e6b8a5;
   margin-top: 18px;
   font-weight: 400;
 }
-.lugano-copy > p:not(.eyebrow):not(.lugano-subtitle) {
+.conference-copy > p:not(.eyebrow):not(.conference-subtitle) {
   color: var(--muted);
   font-size: 17px;
   margin-top: 18px;
   line-height: 1.8;
 }
-.lugano-copy > .button {
+.conference-copy > .button {
   margin-top: 26px;
 }
-.lugano-forum-link {
+.conference-forum-link {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -717,13 +714,13 @@ h3 {
   min-height: 44px;
   color: #bbc4d2;
 }
-.workshop-card {
+.conference-card {
   padding: 32px;
   background: #191c24;
   border: 1px solid #343946;
   border-radius: 18px;
 }
-.workshop-card-top {
+.conference-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -731,7 +728,7 @@ h3 {
   color: #b3bece;
   font-size: 14px;
 }
-.workshop-badge {
+.conference-badge {
   color: #ffc3a8;
   background: #ff6b3d12;
   border: 1px solid #ff6b3d32;
@@ -739,19 +736,19 @@ h3 {
   padding: 4px 9px;
   font-size: 14px;
 }
-.workshop-card h3 {
+.conference-card h3 {
   font-size: 31px;
   line-height: 1.2;
   letter-spacing: -0.025em;
   margin-top: 24px;
 }
-.workshop-card h3 br {
+.conference-card h3 br {
   display: none;
 }
-.workshop-card h3 br::after {
+.conference-card h3 br::after {
   content: " ";
 }
-.workshop-details {
+.conference-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
@@ -759,23 +756,23 @@ h3 {
   padding-top: 24px;
   border-top: 1px solid #353a47;
 }
-.workshop-details > div > span {
+.conference-details > div > span {
   display: block;
   font-size: 14px;
   color: #a9b4c6;
   margin-bottom: 8px;
 }
-.workshop-details b {
+.conference-details b {
   display: block;
   font-size: 16px;
   font-weight: 500;
 }
-.workshop-details p {
+.conference-details p {
   color: #aeb8c9;
   font-size: 15px;
   margin-top: 4px;
 }
-.workshop-speakers {
+.conference-note {
   color: #aeb8c9;
   font-size: 15px;
   margin-top: 23px;
@@ -815,16 +812,6 @@ h3 {
 .calendar-actions svg {
   width: 16px;
   height: 16px;
-}
-.workshop-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding-top: 20px;
-  margin-top: 24px;
-  border-top: 1px solid #353a47;
-  font-size: 15px;
 }
 .faq {
   display: grid;
@@ -1004,7 +991,7 @@ h3 {
   }
 
   .foundation-inner,
-  .lugano-inner,
+  .conference-inner,
   .contact,
   .faq {
     gap: 40px;
@@ -1018,7 +1005,7 @@ h3 {
   .app-card h3 {
     font-size: 21px;
   }
-  .workshop-card {
+  .conference-card {
     padding: 25px;
   }
   .site-footer {
@@ -1100,7 +1087,7 @@ h3 {
     display: none;
   }
   .foundation-inner,
-  .lugano-inner {
+  .conference-inner {
     grid-template-columns: 1fr;
     gap: 36px;
   }
@@ -1286,48 +1273,48 @@ h3 {
     width: 31px;
     height: 31px;
   }
-  .lugano-inner {
+  .conference-inner {
     gap: 32px;
   }
-  .lugano-copy h2 {
+  .conference-copy h2 {
     font-size: 43px;
   }
-  .lugano-copy .eyebrow {
+  .conference-copy .eyebrow {
     font-size: 14px;
   }
-  .lugano-subtitle {
+  .conference-subtitle {
     font-size: 23px;
   }
-  .lugano-copy > p:not(.eyebrow):not(.lugano-subtitle) {
+  .conference-copy > p:not(.eyebrow):not(.conference-subtitle) {
     font-size: 16px;
   }
-  .workshop-card {
+  .conference-card {
     padding: 26px 22px;
     border-radius: 14px;
   }
-  .workshop-card h3 {
+  .conference-card h3 {
     font-size: 29px;
   }
-  .workshop-card-top {
+  .conference-card-top {
     font-size: 14px;
   }
-  .workshop-details {
+  .conference-details {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .workshop-details > div {
+  .conference-details > div {
     display: grid;
     grid-template-columns: 55px 1fr;
     column-gap: 12px;
   }
-  .workshop-details > div > span {
+  .conference-details > div > span {
     grid-row: 1/3;
     margin: 0;
   }
-  .workshop-details b {
+  .conference-details b {
     font-size: 16px;
   }
-  .workshop-details p {
+  .conference-details p {
     font-size: 15px;
   }
   .calendar-actions {
@@ -1337,9 +1324,6 @@ h3 {
   .calendar-google {
     font-size: 15px;
     min-height: 48px;
-  }
-  .workshop-link {
-    font-size: 15px;
   }
   .faq {
     gap: 28px;

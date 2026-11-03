@@ -102,10 +102,16 @@ function Icon({ kind, size = 24 }: { kind: string; size?: number }) {
 const links = {
   github: "https://github.com/pubky/paykit-rs",
   specs: "https://github.com/pubky/paykit-rs/tree/master/specs",
-  agenda: "https://planb.lugano.ch/planb-forum/agenda/",
+  conference: "https://planb.sv/",
 };
 
-function Contact({ contactEmail }: { contactEmail: string }) {
+function Contact({
+  contactEmail,
+  showConference,
+}: {
+  contactEmail: string;
+  showConference: boolean;
+}) {
   return (
     <section
       className="contact section-pad"
@@ -168,7 +174,7 @@ function Contact({ contactEmail }: { contactEmail: string }) {
             <option>Wallet integration</option>
             <option>Service integration</option>
             <option>A question about Paykit</option>
-            <option>Meeting in Lugano</option>
+            {showConference && <option>Meeting in El Salvador</option>}
           </select>
         </label>
         <label>
@@ -193,7 +199,13 @@ function Contact({ contactEmail }: { contactEmail: string }) {
   );
 }
 
-export default function Landing({ contactEmail }: { contactEmail: string }) {
+export default function Landing({
+  contactEmail,
+  showConference,
+}: {
+  contactEmail: string;
+  showConference: boolean;
+}) {
   return (
     <>
       <a href="#main" className="skip-link">
@@ -578,85 +590,71 @@ export default function Landing({ contactEmail }: { contactEmail: string }) {
           </div>
         </section>
 
-        <section className="lugano" aria-labelledby="lugano-title">
-          <div className="lugano-landscape" aria-hidden="true">
-            <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice">
-              <path d="m0 230 118-60 100 42 141-165 152 179 121-95 77 47 75-131 100 142 104-67 116 109 92-85 144 103" />
-              <path d="m0 265 118-60 100 42 141-165 152 179 121-95 77 47 75-131 100 142 104-67 116 109 92-85 144 103" />
-              <path d="m0 300 118-60 100 42 141-165 152 179 121-95 77 47 75-131 100 142 104-67 116 109 92-85 144 103" />
-              <path d="m0 335 118-60 100 42 141-165 152 179 121-95 77 47 75-131 100 142 104-67 116 109 92-85 144 103" />
-              <path d="m0 370 118-60 100 42 141-165 152 179 121-95 77 47 75-131 100 142 104-67 116 109 92-85 144 103" />
-            </svg>
-          </div>
-          <div className="lugano-inner section-pad">
-            <div className="lugano-copy">
-              <p className="eyebrow">
-                <Icon kind="pin" size={17} /> LUGANO, SWITZERLAND · 23–24 OCT
-                2026
-              </p>
-              <h2 id="lugano-title">Meet us in Lugano</h2>
-              <p className="lugano-subtitle title-accent">Let’s talk Paykit.</p>
-              <p>
-                Find us at the Synonym booth at Plan ₿ Forum. Come say hello,
-                bring your questions, and join our Paykit workshop.
-              </p>
-              <a href="#contact" className="button button-dark">
-                Get in touch <Arrow />
-              </a>
-              <a
-                className="lugano-forum-link"
-                href="https://planb.lugano.ch/planb-forum/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Explore Plan ₿ Forum <Arrow diagonal />
-              </a>
-            </div>
-            <div className="workshop-card">
-              <div className="workshop-card-top">
-                <span>YOU’RE INVITED</span>
-                <span className="workshop-badge">WORKSHOP</span>
-              </div>
-              <h3>Paykit: A new Payment Protocol Paradigm</h3>
-              <div className="workshop-details">
-                <div>
-                  <span>WHEN</span>
-                  <b>Saturday, 24 October</b>
-                  <p>16:15–17:00 CEST</p>
-                </div>
-                <div>
-                  <span>WHERE</span>
-                  <b>UTXO Room</b>
-                  <p>Plan ₿ Forum, Lugano</p>
-                </div>
-              </div>
-              <p className="workshop-speakers">
-                With Ben Kaufman &amp; Denys Zaliskyi
-              </p>
-              <div className="calendar-actions">
-                <a href="/api/calendar" download className="calendar-download">
-                  Add to calendar <Arrow />
+        {showConference && (
+          <section className="conference" aria-labelledby="conference-title">
+            <div className="conference-inner section-pad">
+              <div className="conference-copy">
+                <p className="eyebrow">
+                  <Icon kind="pin" size={17} /> SAN SALVADOR, EL SALVADOR · 29–30 JAN
+                  2027
+                </p>
+                <h2 id="conference-title">Meet us in El Salvador</h2>
+                <p className="conference-subtitle title-accent">Let’s talk Paykit.</p>
+                <p>
+                  We’re heading to Plan ₿ Forum El Salvador. Come say hello,
+                  bring your questions, and talk payments with us in San Salvador.
+                </p>
+                <a href="#contact" className="button button-dark">
+                  Get in touch <Arrow />
                 </a>
                 <a
-                  href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Paykit%3A%20A%20new%20Payment%20Protocol%20Paradigm&amp;dates=20261024T141500Z%2F20261024T150000Z&amp;details=With%20Ben%20Kaufman%20and%20Denys%20Zaliskyi.%20Agenda%3A%20https%3A%2F%2Fplanb.lugano.ch%2Fplanb-forum%2Fagenda%2F&amp;location=UTXO%20Room%2C%20Plan%20%E2%82%BF%20Forum%2C%20Lugano%2C%20Switzerland"
+                  className="conference-forum-link"
+                  href={links.conference}
                   target="_blank"
                   rel="noreferrer"
-                  className="calendar-google"
                 >
-                  Google Calendar <Arrow diagonal />
+                  Explore Plan ₿ Forum <Arrow diagonal />
                 </a>
               </div>
-              <a
-                href={links.agenda}
-                target="_blank"
-                rel="noreferrer"
-                className="workshop-link"
-              >
-                Find it on the conference agenda <Arrow diagonal />
-              </a>
+              <div className="conference-card">
+                <div className="conference-card-top">
+                  <span>OUR NEXT STOP</span>
+                  <span className="conference-badge">CONFERENCE</span>
+                </div>
+                <h3>Plan ₿ Forum El Salvador</h3>
+                <div className="conference-details">
+                  <div>
+                    <span>WHEN</span>
+                    <b>29–30 January 2027</b>
+                    <p>Two days of Bitcoin conversations</p>
+                  </div>
+                  <div>
+                    <span>WHERE</span>
+                    <b>San Salvador</b>
+                    <p>El Salvador</p>
+                  </div>
+                </div>
+                <p className="conference-note">
+                  Details about our talks and where to find us will follow.
+                  Want to meet? Get in touch and let’s make a plan.
+                </p>
+                <div className="calendar-actions">
+                  <a href="/api/calendar" download className="calendar-download">
+                    Save the dates <Arrow />
+                  </a>
+                  <a
+                    href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Plan%20%E2%82%BF%20Forum%20El%20Salvador&amp;dates=20270129%2F20270131&amp;details=Meet%20the%20Paykit%2FPubky%20team%20%28Synonym%29.%20Details%20about%20our%20talks%20and%20where%20to%20find%20us%20will%20follow.%20https%3A%2F%2Fplanb.sv%2F&amp;location=San%20Salvador%2C%20El%20Salvador"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="calendar-google"
+                  >
+                    Google Calendar <Arrow diagonal />
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="faq section-pad" aria-labelledby="faq-title">
           <div>
@@ -723,7 +721,7 @@ export default function Landing({ contactEmail }: { contactEmail: string }) {
             </details>
           </div>
         </section>
-        <Contact contactEmail={contactEmail} />
+        <Contact contactEmail={contactEmail} showConference={showConference} />
       </main>
       <footer className="site-footer">
         <div className="footer-top">
