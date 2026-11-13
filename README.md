@@ -26,12 +26,23 @@ npm start
 
 ```sh
 npm test
+npx next typegen
 npm run typecheck
 npm run build
 npm run test:browser
 ```
 
-Install Chromium with `npx playwright install chromium` if needed. Browser checks start the production server automatically after a build. Set `PLAYWRIGHT_BASE_URL` to test an existing deployment. Tests cover anonymous access, sharing metadata, calendar downloads, desktop/mobile layout, the payment animation, click-to-load video, and the email-draft composer.
+Install Chromium and its system dependencies with `npx playwright install --with-deps chromium` if needed. Browser checks start the production server automatically after a build. Set `PLAYWRIGHT_BASE_URL` to test an existing deployment. Tests cover anonymous access, sharing metadata, desktop/mobile layout and navigation, keyboard access, the payment animation, click-to-load video, and email-draft validation and encoding. Failed tests retain screenshots and traces under `test-results/`.
+
+To check the actual production Docker image, including deterministic conference expiry and calendar downloads:
+
+```sh
+npm run test:docker
+```
+
+This requires Docker and the locally installed Chromium above. It builds the Dockerfile, starts an isolated container on a random loopback port, runs the full browser suite, and removes its test containers and image afterward. Pass Playwright filters with `npm run test:docker -- --grep "conference"`. The expiry test starts a second container from the same image with a read-only, test-only Node clock preload; it advances that server across the cutoff without restarting it and checks HTML, RSC, the contact option, calendar cache lifetimes, and `410 Gone`. The production application has no clock override. This isolated clock test is skipped by plain `test:browser`; the remaining checks use the server's real date and work after the conference expires.
+
+GitHub Actions runs two parallel jobs on pull requests targeting `main` and pushes to `main`, with a manual run option. Both use Ubuntu 24.04 and Node.js 22. The first runs unit tests, generates Next.js types, and checks TypeScript; the second installs Chromium and runs `test:docker`, including all conference-expiry checks. Failed browser runs upload screenshots and traces for seven days. New commits cancel superseded PR runs. The workflow only verifies changes; it does not publish images or deploy the site.
 
 ## Deploy with Docker
 
