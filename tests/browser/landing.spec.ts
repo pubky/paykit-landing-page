@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test";
+import { readFile } from "node:fs/promises";
+import sharp from "sharp";
 
 test("the public launch serves HTML, RSC, and calendars without a session", async ({
   request,
@@ -48,9 +50,11 @@ test("the public launch serves HTML, RSC, and calendars without a session", asyn
 test("anonymous social previews describe the public landing page", async ({
   request,
 }) => {
-  const canonical = "https://paykit.to/";
-  const imageUrl = new URL("/social-preview-v3.png", canonical).href;
-  const title = "Paykit — Pay. Get paid.";
+  const canonical =
+    new URL(process.env.PLAYWRIGHT_EXPECTED_SITE_URL || "https://paykit.to/")
+      .origin + "/";
+  const imageUrl = new URL("/social-preview-v4.jpg", canonical).href;
+  const title = "Paykit — Pay people, not addresses";
   const description =
     "Paykit is the open payment coordination protocol. Pay a person and let your wallet handle the payment logistics.";
   for (const userAgent of [
@@ -63,7 +67,6 @@ test("anonymous social previews describe the public landing page", async ({
     const response = await request.get("/", { headers, maxRedirects: 0 });
     expect(response.status(), userAgent).toBe(200);
     expect(new URL(response.url()).pathname).toBe("/");
-    expect(response.headers()["x-robots-tag"]).toBeUndefined();
     const html = await response.text();
     const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1];
     expect(
@@ -88,13 +91,15 @@ test("anonymous social previews describe the public landing page", async ({
       "og:image": imageUrl,
       "og:image:width": "1200",
       "og:image:height": "630",
-      "og:image:type": "image/png",
-      "og:image:alt": "Paykit — The open payment coordination protocol.",
+      "og:image:type": "image/jpeg",
+      "og:image:alt":
+        "Paykit — Pay people, not addresses. The open payment coordination protocol.",
       "twitter:card": "summary_large_image",
       "twitter:title": title,
       "twitter:description": description,
       "twitter:image": imageUrl,
-      "twitter:image:alt": "Paykit — The open payment coordination protocol.",
+      "twitter:image:alt":
+        "Paykit — Pay people, not addresses. The open payment coordination protocol.",
     })) {
       const actual = metadata.get(name);
       expect(
@@ -105,25 +110,38 @@ test("anonymous social previews describe the public landing page", async ({
     expect(metadata.get("robots")).toMatch(/\bindex\b/);
     expect(metadata.get("robots")).toMatch(/\bfollow\b/);
     expect(metadata.get("robots")).not.toContain("noindex");
+    expect(head).not.toContain("Pay. Get paid.");
     expect(html).toContain('data-testid="payment-story"');
     expect(html).toContain("BitBox");
   }
 
-  const image = await request.get("/social-preview-v3.png", {
-    maxRedirects: 0,
-  });
+  // A configured deployment check follows the actual advertised absolute URL.
+  const image = await request.get(
+    process.env.PLAYWRIGHT_EXPECTED_SITE_URL ? imageUrl : "/social-preview-v4.jpg",
+    { maxRedirects: 0 },
+  );
   expect(image.status()).toBe(200);
-  expect(image.headers()["content-type"]).toContain("image/png");
-  const png = await image.body();
-  expect(
-    png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])),
-  ).toBe(true);
-  expect(png.readUInt32BE(16)).toBe(1200);
-  expect(png.readUInt32BE(20)).toBe(630);
+  expect(image.headers()["content-type"]).toContain("image/jpeg");
+  const jpeg = await image.body();
+  const expectedImage = await readFile("public/social-preview-v4.jpg");
+  expect(jpeg.equals(expectedImage)).toBe(true);
+  const dimensions = await sharp(jpeg).metadata();
+  expect(dimensions.format).toBe("jpeg");
+  expect(dimensions.width).toBe(1200);
+  expect(dimensions.height).toBe(630);
   const robots = await request.get("/robots.txt");
   expect(robots.status()).toBe(200);
-  expect(await robots.text()).toMatch(/^Allow:\s*\/$/m);
-  expect(await robots.text()).not.toMatch(/^Disallow:\s*\/$/m);
+  const robotGroups = (await robots.text()).split(/(?=^User-agent:)/im);
+  const twitterGroups = robotGroups.filter((group) =>
+    /^User-agent:\s*Twitterbot(?:\/\S+)?\s*$/im.test(group),
+  );
+  const applicableGroups = twitterGroups.length
+    ? twitterGroups
+    : robotGroups.filter((group) => /^User-agent:\s*\*\s*$/im.test(group));
+  expect(applicableGroups.length).toBeGreaterThan(0);
+  const twitterRules = applicableGroups.join("\n");
+  expect(twitterRules).toMatch(/^Allow:\s*\/$/im);
+  expect(twitterRules).not.toMatch(/^Disallow:\s*\/$/im);
 });
 
 test("visitors can browse the public page at desktop and phone widths", async ({

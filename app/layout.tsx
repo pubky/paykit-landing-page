@@ -8,19 +8,18 @@ const sans = Geist({
   display: "swap",
 });
 
-const socialTitle = "Paykit — Pay. Get paid.";
+const socialTitle = "Paykit — Pay people, not addresses";
 const description =
   "Paykit is the open payment coordination protocol. Pay a person and let your wallet handle the payment logistics.";
 const socialImage = {
-  url: "/social-preview-v3.png",
-  type: "image/png",
+  url: "/social-preview-v4.jpg",
+  type: "image/jpeg",
   width: 1200,
   height: 630,
-  alt: "Paykit — The open payment coordination protocol.",
+  alt: "Paykit — Pay people, not addresses. The open payment coordination protocol.",
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://paykit.to"),
+const siteMetadata: Metadata = {
   title: "Paykit",
   description,
   alternates: { canonical: "/" },
@@ -49,6 +48,18 @@ export const metadata: Metadata = {
     ],
   },
 };
+
+export function generateMetadata(): Metadata {
+  const siteUrl = new URL(process.env.PAYKIT_SITE_URL || "https://paykit.to");
+  if (siteUrl.protocol !== "https:" && siteUrl.protocol !== "http:") {
+    throw new Error("PAYKIT_SITE_URL must be an absolute HTTP or HTTPS URL");
+  }
+
+  return {
+    ...siteMetadata,
+    metadataBase: new URL(siteUrl.origin),
+  };
+}
 
 export default function RootLayout({
   children,
