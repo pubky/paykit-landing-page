@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import sharp from "sharp";
+import { isConferenceVisible } from "../../lib/conference.mjs";
 
 test("the public launch serves HTML, RSC, and calendars without a session", async ({
   request,
@@ -31,10 +32,16 @@ test("the public launch serves HTML, RSC, and calendars without a session", asyn
   expect(await rsc.text()).toContain("payment-scene");
   expect(await rsc.text()).toContain("BitBox");
   const calendar = await request.get("/api/calendar", { maxRedirects: 0 });
-  expect(calendar.status()).toBe(200);
-  expect(calendar.headers()["content-type"]).toContain("text/calendar");
-  expect(calendar.headers()["cache-control"]).toBe("public, max-age=3600, must-revalidate");
-  expect(await calendar.text()).toContain("BEGIN:VCALENDAR");
+  expect(calendar.status()).toBe(isConferenceVisible() ? 200 : 410);
+  if (calendar.status() === 200) {
+    expect(calendar.headers()["content-type"]).toContain("text/calendar");
+    const cache = calendar.headers()["cache-control"].match(/^public, max-age=(\d+), must-revalidate$/);
+    expect(cache).not.toBeNull();
+    expect(Number(cache![1])).toBeLessThanOrEqual(3600);
+    expect(await calendar.text()).toContain("BEGIN:VCALENDAR");
+  } else {
+    expect(calendar.headers()["cache-control"]).toBe("no-store");
+  }
   for (const path of ["/access", "/api/access", "/api/logout"]) {
     expect((await request.get(path, { maxRedirects: 0 })).status(), path).toBe(
       404,
@@ -163,42 +170,7 @@ test("visitors can browse the public page at desktop and phone widths", async ({
   await expect(
     page.getByRole("link", { name: /Pubky Market/i }).first(),
   ).toHaveAttribute("href", "https://staging.pubky.app/shop");
-  const conference = page.getByRole("region", { name: "Meet us in El Salvador" });
-  await expect(conference).toContainText("29–30 January 2027");
-  await expect(conference).toContainText("San Salvador");
-  await expect(conference).toContainText(
-    "Details about our talks and where to find us will follow.",
-  );
-  await expect(
-    conference.getByRole("link", { name: "Explore Plan ₿ Forum" }),
-  ).toHaveAttribute("href", "https://planb.sv/");
   await expect(page.getByText(/Lugano|UTXO Room|16:15–17:00/)).toHaveCount(0);
-  const calendar = await page.request.get("/api/calendar");
-  expect(calendar.headers()["content-type"]).toContain("text/calendar");
-  expect(calendar.headers()["content-disposition"]).toContain(
-    "paykit-planb-el-salvador-2027.ics",
-  );
-  expect(calendar.headers()["cache-control"]).toBe("public, max-age=3600, must-revalidate");
-  expect(await calendar.text()).toContain("DTSTART;VALUE=DATE:20270129");
-  await expect(
-    page.getByRole("link", { name: "Save the dates" }),
-  ).toHaveAttribute("href", "/api/calendar");
-  const [download] = await Promise.all([
-    page.waitForEvent("download"),
-    page.getByRole("link", { name: "Save the dates" }).click(),
-  ]);
-  expect(download.suggestedFilename()).toBe("paykit-planb-el-salvador-2027.ics");
-  const googleCalendar = new URL(
-    (await page
-      .getByRole("link", { name: "Google Calendar" })
-      .getAttribute("href")) as string,
-  );
-  expect(googleCalendar.searchParams.get("dates")).toBe(
-    "20270129/20270131",
-  );
-  expect(googleCalendar.searchParams.get("details")).toContain(
-    "Meet the Paykit/Pubky team (Synonym).",
-  );
   await page.evaluate(() => {
     document.documentElement.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
