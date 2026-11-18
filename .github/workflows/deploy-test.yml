@@ -16,7 +16,7 @@ env:
   REGISTRY: europe-west6-docker.pkg.dev/infra-464608/synonym-private-repo
   IMAGE: paykit-landing-page
   REGION: europe-west6
-  SERVICE: paykit-landing-test
+  SERVICE: paykit
   SITE_URL: https://test.paykit.to
 
 jobs:
