@@ -31,7 +31,7 @@ jobs:
       - uses: pubky/ci-workflows/.github/actions/docker/registry_login@main
         with:
           registry: ${{ env.REGISTRY }}
-          gcp_service_account_key: ${{ secrets.GCR_JSON_KEY }}
+          gcp_service_account_key: ${{ secrets.GRC_INFRA_READ_WRITE }}
 
       - uses: pubky/ci-workflows/.github/actions/docker/build_and_push@main
         with:
@@ -46,7 +46,7 @@ jobs:
       # reach the service; ingress restricts who can send traffic to it.
       - uses: pubky/ci-workflows/.github/actions/cloudrun/deploy@main
         with:
-          gcp_service_account_key: ${{ secrets.CLOUD_RUN_SA_KEY }}
+          gcp_service_account_key: ${{ secrets.CLOUDRUN_INFRA }}
           region: ${{ env.REGION }}
           service: ${{ env.SERVICE }}
           image: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.sha }}
