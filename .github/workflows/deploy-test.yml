@@ -1,0 +1,57 @@
+name: Deploy test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: false
+
+env:
+  REGISTRY: europe-west6-docker.pkg.dev/infra-464608/synonym-private-repo
+  IMAGE: paykit-landing-page
+  REGION: europe-west6
+  SERVICE: paykit-landing-test
+  SITE_URL: https://test.paykit.to
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: pubky/ci-workflows/.github/actions/docker/registry_login@main
+        with:
+          registry: ${{ env.REGISTRY }}
+          gcp_service_account_key: ${{ secrets.GCR_JSON_KEY }}
+
+      - uses: pubky/ci-workflows/.github/actions/docker/build_and_push@main
+        with:
+          registry: ${{ env.REGISTRY }}
+          image: ${{ env.IMAGE }}
+          context: .
+          cache_from: type=gha
+          cache_to: type=gha,mode=max
+
+      # Reachable only through the GCP load balancer fronting test.paykit.to.
+      # allow-unauthenticated is required for the serverless NEG backend to
+      # reach the service; ingress restricts who can send traffic to it.
+      - uses: pubky/ci-workflows/.github/actions/cloudrun/deploy@main
+        with:
+          gcp_service_account_key: ${{ secrets.CLOUD_RUN_SA_KEY }}
+          region: ${{ env.REGION }}
+          service: ${{ env.SERVICE }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ github.sha }}
+          env_vars: PAYKIT_SITE_URL=${{ env.SITE_URL }}
+          flags: >-
+            --port=3000
+            --ingress=internal-and-cloud-load-balancing
+            --allow-unauthenticated
