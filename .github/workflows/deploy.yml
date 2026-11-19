@@ -1,4 +1,4 @@
-name: Deploy test
+name: Deploy
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-test
+  group: deploy
   cancel-in-progress: false
 
 env:
@@ -55,3 +55,4 @@ jobs:
             --port=3000
             --ingress=internal-and-cloud-load-balancing
             --allow-unauthenticated
+            --max-instances=3
