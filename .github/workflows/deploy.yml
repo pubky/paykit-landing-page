@@ -17,7 +17,7 @@ env:
   IMAGE: paykit-landing-page
   REGION: europe-west6
   SERVICE: paykit
-  SITE_URL: https://test.paykit.to
+  SITE_URL: https://paykit.to
 
 jobs:
   deploy:
@@ -41,7 +41,7 @@ jobs:
           cache_from: type=gha
           cache_to: type=gha,mode=max
 
-      # Reachable only through the GCP load balancer fronting test.paykit.to.
+      # Reachable only through the GCP load balancer fronting paykit.to.
       # allow-unauthenticated is required for the serverless NEG backend to
       # reach the service; ingress restricts who can send traffic to it.
       - uses: pubky/ci-workflows/.github/actions/cloudrun/deploy@main
